@@ -1,0 +1,545 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}</style>
+<title>Nossa Série</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;700;800&family=Caveat:wght@600&display=swap">
+<style>
+/* Layout: perfis → banner "série original" → fileiras horizontais de cartazes → modal de episódio */
+:root{
+  --bg:#0d0a0c; --surface:#1a1417; --surface-2:#251c20;
+  --fg:#f4ecef; --muted:#a8979d; --accent:#e5486b; --gold:#f2c46d;
+  --display:"Bebas Neue","Impact","Arial Narrow",sans-serif;
+  --body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --hand:"Caveat","Comic Sans MS",cursive;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{background:var(--bg);color:var(--fg)}
+body{font-family:var(--body);font-size:15px;line-height:1.5;overflow-x:hidden}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.gutter{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+@media(min-width:900px){.gutter{padding-left:max(48px,env(safe-area-inset-left,0px));padding-right:max(48px,env(safe-area-inset-right,0px))}}
+
+/* ---------- tela de início: parede de fotos ---------- */
+#start{position:relative;min-height:100vh;display:grid;place-items:center;overflow:hidden;isolation:isolate;text-align:center}
+.wall{position:absolute;inset:-25% -15%;display:flex;gap:12px;transform:rotate(-8deg);z-index:-2;opacity:.6}
+.wall .col{flex:1;min-width:0;display:flex;flex-direction:column;gap:12px;animation:wallUp 70s linear infinite}
+.wall .col:nth-child(even){animation-name:wallDown;animation-duration:85s}
+.wall img{width:100%;aspect-ratio:3/4;object-fit:cover;object-position:center 30%;border-radius:6px;display:block}
+@keyframes wallUp{to{transform:translateY(-50%)}}
+@keyframes wallDown{from{transform:translateY(-50%)}to{transform:translateY(0)}}
+#start::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(ellipse 70% 60% at center,rgba(13,10,12,.62),rgba(13,10,12,.86) 70%,var(--bg))}
+.start-inner{display:flex;flex-direction:column;align-items:center;gap:14px;padding-block:64px}
+.start-logo{position:absolute;top:max(20px,env(safe-area-inset-top,0px));left:max(16px,env(safe-area-inset-left,0px));font-size:clamp(30px,4vw,40px)}
+@media(min-width:900px){.start-logo{left:48px}}
+.who-title{font-weight:500;font-size:clamp(30px,5vw,52px);margin:0 0 18px;text-wrap:balance}
+.profile{background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:14px;color:var(--muted);transition:color .2s}
+.avatar{width:clamp(130px,20vw,190px);aspect-ratio:1;max-width:100%;border-radius:10px;border:3px solid transparent;background-size:cover;background-position:center 25%;transition:border-color .2s, transform .25s;box-shadow:0 12px 40px rgba(0,0,0,.6)}
+.pname{font-size:clamp(17px,2vw,22px)}
+.profile:hover,.profile:focus-visible{color:var(--fg)}
+.profile:hover .avatar,.profile:focus-visible .avatar{border-color:var(--fg);transform:scale(1.06)}
+.start-meta{margin:0 0 10px;color:var(--muted);font-size:15px}
+.btn.big{font-size:18px;padding:14px 30px}
+
+/* ---------- app ---------- */
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:14px;background:linear-gradient(var(--bg) 10%,transparent)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--bg)}
+.logo{font-family:var(--display);font-size:30px;letter-spacing:.04em;color:var(--accent)}
+.logo span{color:var(--gold)}
+.who{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
+.who b{width:32px;height:32px;border-radius:5px;background-size:cover;background-position:center 25%}
+
+.hero{position:relative;padding-block:clamp(120px,22vw,260px) clamp(40px,6vw,72px);overflow:hidden;isolation:isolate;margin-top:-64px}
+.hero .bgimg{position:absolute;inset:0;z-index:-3;background:url(fotos/223a2931.jpg) center 35%/cover}
+@media(min-width:800px){.hero .bgimg{left:30%}}
+.hero::before{content:"";position:absolute;inset:0;z-index:-1;
+  background:
+   linear-gradient(0deg,var(--bg) 2%,transparent 45%),
+   linear-gradient(90deg,var(--bg) 20%,rgba(13,10,12,.55) 55%,transparent 85%)}
+@media(max-width:799px){.hero::before{background:linear-gradient(0deg,var(--bg) 25%,rgba(13,10,12,.55) 60%,rgba(13,10,12,.2))}}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%;z-index:-2;opacity:.6}
+.tag{display:inline-flex;gap:8px;align-items:center;font-size:12px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin:0}
+.tag i{font-style:normal;color:var(--accent);font-family:var(--display);font-size:20px;letter-spacing:0}
+.hero h2{font-family:var(--display);font-weight:400;font-size:clamp(64px,13vw,150px);line-height:.88;margin:12px 0 16px;text-wrap:balance;max-width:10ch}
+.meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;font-size:14px;color:var(--muted);margin-bottom:16px}
+.meta .match{color:#46d369;font-weight:800}
+.meta .rating{border:1px solid var(--muted);padding:0 6px;font-size:12px}
+.hero p{max-width:52ch;font-size:clamp(15px,1.6vw,18px);margin:0 0 24px}
+.ctas{display:flex;flex-wrap:wrap;gap:12px}
+.btn{border:0;border-radius:5px;padding:11px 24px;font-weight:800;font-size:16px;display:inline-flex;align-items:center;gap:10px}
+.btn.play{background:var(--fg);color:var(--bg)}
+.btn.info{background:rgba(160,150,155,.35);color:var(--fg)}
+.btn:hover{filter:brightness(.88)}
+
+.row{display:flex;flex-direction:column;gap:10px;margin-bottom:36px}
+.row h3{font-size:clamp(17px,2vw,22px);margin:0;font-weight:800}
+.row h3 small{font-weight:500;color:var(--muted);font-size:13px;margin-left:8px}
+.track{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding-block:8px 14px;scrollbar-width:thin;scrollbar-color:var(--surface-2) transparent}
+.card{flex:0 0 auto;width:clamp(220px,24vw,300px);aspect-ratio:16/9;max-width:100%;border:0;border-radius:6px;position:relative;overflow:hidden;scroll-snap-align:start;text-align:left;padding:12px;display:flex;flex-direction:column;justify-content:flex-end;transition:transform .25s;background:var(--surface)}
+.card:hover,.card:focus-visible{transform:scale(1.05);z-index:2}
+.card .art{position:absolute;inset:0;z-index:0}
+.card .art video{width:100%;height:100%;object-fit:cover;display:block}
+.card .art::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 30%,rgba(0,0,0,.85))}
+.card .ep{position:relative;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.card .t{position:relative;font-family:var(--display);font-size:clamp(24px,2.6vw,30px);line-height:1;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.5)}
+.card .glyph{position:absolute;top:10px;right:12px;font-family:var(--display);font-size:52px;line-height:1;color:rgba(255,255,255,.35);z-index:1;text-shadow:0 2px 10px rgba(0,0,0,.4)}
+.card.new::before{content:"NOVO EPISÓDIO";position:absolute;top:0;left:0;z-index:2;background:var(--accent);color:#fff;font-size:10px;font-weight:800;letter-spacing:.1em;padding:3px 8px;border-bottom-right-radius:4px}
+.card .playmark{position:absolute;top:10px;left:12px;z-index:2;font-size:11px;font-weight:800;letter-spacing:.1em;background:rgba(0,0,0,.55);padding:2px 8px;border-radius:3px}
+
+.card.poster2{width:clamp(140px,14vw,180px);aspect-ratio:2/3;padding:0}
+.card.poster2 .art::after{background:none}
+
+.top{width:clamp(180px,20vw,230px);aspect-ratio:auto;height:clamp(150px,16vw,190px);padding:0;background:none;display:flex;flex-direction:row;align-items:flex-end;justify-content:flex-start}
+.top .num{font-family:var(--display);font-size:clamp(130px,15vw,180px);line-height:.78;color:var(--bg);-webkit-text-stroke:3px #6b5a60;flex:0 0 auto;margin-right:-22px;position:relative;z-index:1}
+.top .poster{height:100%;flex:1;border-radius:5px;padding:10px 10px 10px 32px;display:flex;flex-direction:column;justify-content:flex-end;position:relative;overflow:hidden;min-width:0}
+.top .poster span{position:relative;font-family:var(--display);font-size:20px;line-height:1.02;color:#fff;text-wrap:balance}
+
+.bar{position:relative;height:3px;background:rgba(255,255,255,.25);margin-top:8px;border-radius:2px}
+.bar i{position:absolute;inset:0 auto 0 0;background:var(--accent);border-radius:2px}
+
+.s2{margin-block:24px 64px;border-radius:10px;background:var(--surface);padding:clamp(24px,4vw,48px);display:grid;gap:20px;grid-template-columns:1fr;align-items:center}
+@media(min-width:800px){.s2{grid-template-columns:1.2fr 1fr}}
+.s2 h3{font-family:var(--display);font-weight:400;font-size:clamp(40px,6vw,72px);line-height:.9;margin:6px 0 10px}
+.s2 p{margin:0;color:var(--muted);max-width:48ch}
+.count{display:flex;gap:10px;flex-wrap:wrap}
+.count div{background:var(--surface-2);border-radius:6px;padding:12px 14px;min-width:76px;text-align:center}
+.count b{display:block;font-family:var(--display);font-size:40px;font-weight:400;line-height:1;font-variant-numeric:tabular-nums}
+.count small{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+footer{padding-block:24px 48px;color:var(--muted);font-size:13px}
+
+.modal{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.78);display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:max(24px,env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) 24px max(12px,env(safe-area-inset-left,0px))}
+.sheet{width:min(720px,100%);background:var(--surface);border-radius:10px;overflow:hidden;animation:pop .28s ease-out;position:relative}
+@keyframes pop{from{transform:translateY(16px) scale(.97);opacity:.4}}
+.sheet .cover{aspect-ratio:4/3;max-width:100%;position:relative;display:flex;align-items:flex-end;padding:20px 24px;background-color:var(--bg)}
+@media(min-width:700px){.sheet .cover{aspect-ratio:16/10}}
+.sheet .cover video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000}
+.sheet .cover::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 55%,var(--surface));pointer-events:none}
+.sheet .cover.isvideo::after{display:none}
+.sheet .cover h4{position:relative;z-index:1;font-family:var(--display);font-weight:400;font-size:clamp(40px,7vw,64px);line-height:.9;margin:0;color:#fff;text-wrap:balance;text-shadow:0 2px 12px rgba(0,0,0,.6)}
+.sheet .cover.isvideo h4{display:none}
+.sheet .close{position:absolute;top:12px;right:12px;z-index:3;width:36px;height:36px;border-radius:50%;border:0;background:var(--bg);font-size:20px}
+.sheet .body{padding:12px 24px 28px;display:flex;flex-direction:column;gap:12px}
+.sheet .body p{margin:0;font-size:16px;max-width:60ch}
+.sheet .body h5{font-family:var(--display);font-weight:400;font-size:34px;line-height:1;margin:0}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px;margin-top:4px}
+.gal button{border:2px solid transparent;border-radius:5px;padding:0;aspect-ratio:3/4;max-width:100%;background-size:cover;background-position:center 30%}
+.gal button[aria-pressed="true"]{border-color:var(--gold)}
+.sheet .letter{font-family:var(--hand);font-size:clamp(24px,3.4vw,30px);line-height:1.25;color:var(--fg)}
+.sheet .letter p{font-size:inherit}
+.sign{color:var(--accent)}
+
+/* ---------- abertura: montagem de fotos ---------- */
+#intro{position:fixed;inset:0;z-index:60;background:#000;overflow:hidden}
+#mBg{position:absolute;inset:-40px;background-size:cover;background-position:center;filter:blur(28px) brightness(.45)}
+#mImg{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+@media(max-width:700px){#mImg{object-fit:cover;object-position:center 30%}}
+#mImg.go{animation:kb var(--d,300ms) linear forwards}
+@keyframes kb{from{transform:scale(1.14)}to{transform:scale(1.02)}}
+.flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}
+.flash.go{animation:flash .22s ease-out}
+@keyframes flash{from{opacity:.28}to{opacity:0}}
+.myear{position:absolute;left:max(24px,env(safe-area-inset-left,0px));bottom:max(28px,env(safe-area-inset-bottom,0px));font-family:var(--display);font-size:clamp(72px,13vw,150px);line-height:1;color:#fff;text-shadow:0 4px 30px rgba(0,0,0,.7);font-variant-numeric:tabular-nums}
+.ilogo{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;white-space:nowrap;font-family:var(--display);font-size:clamp(64px,16vw,190px);letter-spacing:.04em;color:var(--accent);opacity:0;text-shadow:0 6px 40px rgba(0,0,0,.6)}
+.ilogo span{color:var(--gold)}
+.ilogo.go{animation:tadum 2.2s ease-in forwards}
+.skip{position:absolute;z-index:3;right:max(16px,env(safe-area-inset-right,0px));top:max(16px,env(safe-area-inset-top,0px));background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.4);border-radius:4px;padding:6px 14px;font-size:13px;font-weight:700;color:#fff}
+@keyframes tadum{0%{transform:scale(.6);opacity:0;filter:blur(8px)}25%{transform:scale(1);opacity:1;filter:blur(0)}70%{transform:scale(1.08);opacity:1}100%{transform:scale(3.2);opacity:0}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}#intro{display:none}}
+</style>
+
+<section id="start">
+  <div class="wall" id="wall" aria-hidden="true"></div>
+  <div class="logo start-logo" id="logoStart"></div>
+  <div class="start-inner gutter">
+    <h1 class="who-title">Quem está assistindo?</h1>
+    <button class="profile" id="startBtn">
+      <span class="avatar" id="startAv"></span>
+      <span class="pname" id="startName"></span>
+    </button>
+    <p class="start-meta" id="startMeta"></p>
+  </div>
+</section>
+
+<div id="intro" hidden>
+  <div id="mBg"></div>
+  <img id="mImg" alt="">
+  <div class="flash" id="flash"></div>
+  <span class="myear" id="mYear"></span>
+  <div class="ilogo" id="introLogo"></div>
+  <button class="skip" id="skip">Pular abertura ›</button>
+</div>
+
+<div id="app" hidden>
+  <header class="gutter">
+    <div class="logo" id="logo"></div>
+    <div class="who"><span id="whoName"></span><b id="whoAv"></b></div>
+  </header>
+
+  <section class="hero gutter">
+    <div class="bgimg" aria-hidden="true"></div>
+    <canvas id="hearts" aria-hidden="true"></canvas>
+    <div class="tag"><i>A&amp;G</i> Série original</div>
+    <h2 id="heroTitle"></h2>
+    <div class="meta">
+      <span class="match">100% relevante</span>
+      <span id="year"></span>
+      <span class="rating">L</span>
+      <span id="seasons"></span>
+      <span>Romance · Comédia · Odontologia</span>
+    </div>
+    <p id="heroText"></p>
+    <div class="ctas">
+      <button class="btn play" id="playBtn">▶ Assistir</button>
+      <button class="btn info" id="infoBtn">ⓘ Mais informações</button>
+    </div>
+  </section>
+
+  <main class="gutter" id="rows"></main>
+
+  <section class="gutter">
+    <div class="s2">
+      <div>
+        <div class="tag"><i>●</i> Renovada</div>
+        <h3 id="s2Title"></h3>
+        <p id="s2Text"></p>
+      </div>
+      <div class="count" id="count"></div>
+    </div>
+  </section>
+  <footer class="gutter" id="foot"></footer>
+</div>
+
+<div class="modal" id="modal" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+    <button class="close" id="mClose" aria-label="Fechar">✕</button>
+    <div class="cover" id="mCover"><h4 id="mTitle"></h4></div>
+    <div class="body" id="mBody"></div>
+  </div>
+</div>
+
+<script>
+/* ==========================================================
+   ✏️  EDITE AQUI: tudo que aparece na página vem daqui.
+   foto: "ID" → fotos/ID.jpg  |  galeria: ["ID", ...]  |  video: "ID" → fotos/ID.mp4
+   ========================================================== */
+const DADOS = {
+  ela: "Amanda",
+  ele: "Gui",
+  marca: ["NÓS", "FLIX"],
+  inicioNamoro: "2022-10-22",
+  proximaData: "2026-10-22",
+  perfil: { n: "Amanda & Gui", foto: "8034b6fd" },
+
+  // abertura: fotos em ordem, com o ano que aparece no canto
+  montagem: [
+    ["fac747f4",2022],["b4fdffd8",2022],["4738f32b",2022],
+    ["80d61be1",2023],["4d78bfd7",2023],["101099e0",2023],["231e0116-poster",2023],["75221234-poster",2023],["dd648e73",2023],["4ee74a10",2023],
+    ["b235c9cc",2024],["71c21ed7",2024],["a19e1f37",2024],["85b153db",2024],["851854e2",2024],["44491774",2024],["1cc2a697",2024],
+    ["e4e15e4e",2025],["223a2931",2025],["3f1be3af",2025],["8f95825d",2025],["b0f0f8bc",2025],["b7e35015",2025],["7c3707a5",2025],["20a6c918",2025],["a6198524",2025],["e7eb658e",2025],["c2b5eff8",2025],["bec24705",2025],["f05f734c",2025],["b4bc935e",2025],
+    ["2d8f9b5f",2026],["6d602b0a",2026],["8034b6fd",2026],
+    // rajada final: "e muito mais"
+    ["72e40007","∞"],["89940681","∞"],["33f55a00","∞"],["96956c76","∞"],["04fe38a1","∞"],["548edb92","∞"],["65b77bb8","∞"],["84ab32b0","∞"],["df9e915e","∞"],["7b448b03","∞"],["d17d60f9","∞"],["76d3fef7","∞"],["aa1cac40","∞"],["b63cd230","∞"],["438a5aed","∞"],["dad09abe","∞"],
+    ["3c4079c1","∞"],
+  ],
+
+  heroTitulo: "Nós Dois",
+  heroTexto: "Ele era do 2º ano, ela do 1º. Mesma escola, nenhuma palavra trocada, até uma mensagem no Instagram nas férias de julho. Quatro temporadas depois, ela está virando dentista e ele continua achando que ganhou na loteria.",
+
+  carta: [
+    "Feliz 4 anos, minha princesa.",
+    "Lembra do garoto do 2º ano que nunca tinha falado com você? Ele passou um tempão te olhando de longe na escola, até criar coragem e te mandar uma mensagem no Instagram nas férias. Se alguém falasse pra ele que aquela mensagem ia virar 4 anos, ele não ia acreditar.",
+    "Hoje eu olho pra trás e vejo tudo: o primeiro beijo, o euteamo no desespero, a aliança no seu aniversário, a praia, o estádio, o museu, os casamentos, as festas, tudo e mais um pouco. E vejo também a parte difícil. Teve momentos em que a gente quase desistiu, e mesmo assim a gente escolheu ficar. Pra mim essas escolhas valem mais do que qualquer episódio bonito.",
+    "Esse ano eu te vi vestir o jaleco, virar madrugada estudando e virar, cada vez mais, a Dra. Amanda. Eu tenho muito orgulho de você, amor. Orgulho de quem você é e de quem você tá se tornando.",
+    "Eu fiz essa série porque o que eu sinto não cabia numa carta só. São quatro temporadas, e eu não pularia nenhum episódio. Nem os tristes, porque foram eles que mostraram que a gente aguenta tudo junto.",
+    "Que venha a Temporada 5, e a 6, e todas as outras. Eu quero estar do seu lado em todas elas, de preferência na primeira fila.",
+    "Obrigado por ter respondido aquela mensagem. Euteamo, hoje e sempre ❤️",
+  ],
+
+  temporadas: [
+    { nome: "Temporada 1 · Como tudo começou", sub: "2022", eps: [
+      { t: "O Garoto do 2º Ano", data: "2022", d: "Mesma escola, corredores diferentes. Ele no 2º ano, ela no 1º. Nunca tinham trocado uma palavra, mas ele já reparava nela fazia muuuito tempo.", cor: ["#6db3f2","#16305e"], foto: "80ebb99b" },
+      { t: "A Mensagem", data: "02/07/2022", d: "Começam as férias. Sem a escola pra esbarrar nela, ele toma coragem e manda mensagem no Instagram. Ela responde. A série começa aqui.", cor: ["#c56df2","#3a1a6b"], foto: "5c3c41d9" },
+      { t: "Férias de Conversa", data: "Julho de 2022", d: "Um mês inteiro conversando todo dia. As férias mais curtas e mais longas da vida dele, tudo ao mesmo tempo.", cor: ["#46d3a0","#0f4a3a"], foto: "0cc87d91" },
+      { t: "Primeiro Dia de Aula", data: "01/08/2022", d: "Volta às aulas. Todo mundo reclamando, menos ele. Foi o dia do primeiro beijo. Melhor primeiro dia de aula da história.", cor: ["#f2c46d","#7a3b1c"], foto: "fac747f4" },
+      { t: "Achei Que Era o Fim", data: "04/08/2022", d: "Três dias depois do beijo, ela passa muito mal, com uma dor forte no peito. Ele entra em pânico, acha que vai perder ela e solta o primeiro \"eu te amo\". Ela ficou bem. O eu te amo ficou também. (Foto: 09/08/2022, cinco dias depois.)", cor: ["#e5486b","#5a1530"], foto: "b4fdffd8" },
+      { t: "Sem Pedido, Mas Oficial", data: "22/10/2022", d: "Ninguém ajoelhou, ninguém perguntou. A coisa foi ficando séria e, quando viram, já era namoro. A data entrou pro calendário assim mesmo.", cor: ["#e5486b","#2a0c18"], foto: "4738f32b" },
+    ]},
+    { nome: "Temporada 2 · As primeiras vezes", sub: "2023", eps: [
+      { t: "A Primeira Noite", data: "Abril de 2023", d: "A primeira vez que dormiram juntos. E o programa da noite foi... máscara de argila. Ela fazendo bico, ele de olho arregalado, os dois sem vergonha nenhuma. Acordar do lado dela virou o novo objetivo de vida dele.", cor: ["#a8835e","#3a2a1a"], foto: "80d61be1", galeria: ["80d61be1","4d78bfd7"] },
+      { t: "A Aliança", data: "07/05/2023", d: "O pedido nunca aconteceu, então ele resolveu do jeito dele: no aniversário dela, apareceu com a aliança. Pedido feito ao contrário.", cor: ["#f2c46d","#5e3a0f"], foto: "101099e0" },
+      { t: "Pé na Areia", data: "2023", d: "A primeira viagem juntos. Guarda-sol, areia e os dois descobrindo que viajar junto é bom demais.", cor: ["#6db3f2","#0f3b5e"], video: "231e0116", videos: ["231e0116","75221234"] },
+    ]},
+    { nome: "Temporada 3 · A temporada difícil", sub: "2024", eps: [
+      { t: "Formado", data: "2024", d: "Ele se forma e a rotina muda. Acabou o \"te vejo amanhã na escola\". Começa o trabalho no shopping, de touca e boné pra trás atrás do balcão, e os dois passam a se ver bem menos.", cor: ["#a8979d","#2a2226"], foto: "6ccc58da", galeria: ["6ccc58da","a19e1f37"] },
+      { t: "Vai, Corinthians", data: "2024", d: "A primeira vez dos dois juntos no estádio do Corinthians. Arquibancada lotada e ela abraçada nele.", cor: ["#f4ecef","#1a1417"], foto: "b235c9cc" },
+      { t: "O Primeiro Buquê", data: "2024", d: "O primeiro buquê de flores que ele deu pra ela. Girassóis, rosas brancas e um cartãozinho com coração. O sorriso dela diz o resto.", cor: ["#e56da8","#4a0f2e"], foto: "93c3e8ef" },
+      { t: "Dois Anos", data: "22/10/2024", d: "Aniversário de 2 anos de namoro. Ele de cabelo descolorido, ela fazendo biquinho. Clássico.", cor: ["#e5486b","#4a0f22"], foto: "85b153db" },
+      { t: "A Formatura Dela", data: "Fim de 2024", d: "Beca, capelo e diploma da E.E. Conselheiro Crispiniano na mão. Ela terminou o ensino médio e ele estava lá do lado, de camisa preta e orgulho no peito.", cor: ["#e5486b","#13305e"], foto: "44491774", galeria: ["44491774","851854e2","1cc2a697"] },
+      { t: "Quase Cancelada", data: "Fim de 2024", d: "A viagem de formatura dela quase terminou com a série. A audiência prendeu a respiração. Mas os dois escolheram continuar, e a série foi renovada.", cor: ["#e5486b","#1a0a10"] },
+      { t: "A Virada", data: "01/01/2025", d: "Depois do quase, a virada. Os dois começaram 2025 se beijando no meio da rua, debaixo dos fogos.", cor: ["#f2c46d","#1a0a10"], foto: "223a2931", novo: true },
+    ]},
+    { nome: "Temporada 4 · A Dra. entra em cena", sub: "2025 e 2026", eps: [
+      { t: "Caloura de Odonto", data: "2025", d: "Ela começa a faculdade de odontologia. Jaleco com o brasão bordado, primeiras provas e a primeira vez que ele ouviu a palavra \"periodonto\".", cor: ["#46d3a0","#0f4a3a"], foto: "6ba95cb1", galeria: ["6ba95cb1","ed6710e9"] },
+      { t: "Mesa Pra Dois", data: "2025", d: "O ano em que eles começaram a sair muito mais. Restaurante novo virou programa oficial do casal.", cor: ["#f2a46d","#5e260f"], foto: "8f95825d" },
+      { t: "Um Dia no Museu", data: "2025", d: "A primeira vez dos dois num museu. Escadaria de mármore, teto pintado, jardim do Ipiranga e ele fingindo que entendia de arte. Ela posando como se o museu fosse dela.", cor: ["#c5b26d","#3a3010"], foto: "7461d40a", galeria: ["7461d40a","b0f0f8bc","b7e35015","8034b6fd","7c3707a5","d6578caf"] },
+      { t: "Ela Ficou Doida na Arena", data: "2025", d: "Um evento top na Arena Corinthians. Ela bebeu além da conta e ficou muito doida. Ele lembra de tudo. Ela, nem tanto.", cor: ["#e5d86d","#4a440f"], foto: "20a6c918", galeria: ["20a6c918","a6198524"] },
+      { t: "Temporada de Casamentos", data: "2025", d: "Foram juntos em casamentos. Os dois de azul-marinho, como se tivessem combinado. (Tinham.) Alguém aí anotou ideias?", cor: ["#f4ecef","#5e3a4a"], foto: "e7eb658e", galeria: ["e7eb658e","c2b5eff8","bec24705"] },
+      { t: "Sobrevivendo à Periodontia", data: "2026", d: "Madrugadas de resumo, cards escritos à mão e ele fingindo que entende bolsa periodontal. Touca, máscara, luva roxa e cara de quem manda na clínica. Ela passou. Óbvio.", cor: ["#46d3a0","#0f4a3a"], foto: "10d3cd83", novo: true },
+    ]},
+  ],
+
+  especiais: [
+    { t: "Natal Juntos", data: "Especial de Natal", d: "Guirlanda na porta, luzinha colorida piscando, os dois combinando de marrom e cara de quem já comeu demais na ceia. Natal bom é Natal junto.", cor: ["#e5486b","#0f4a3a"], foto: "aa1cac40", galeria: ["aa1cac40","b63cd230","dad09abe","76d3fef7"] },
+    { t: "A Virada", data: "Especial de Ano Novo", d: "Look combinando, foto no espelho e beijo no meio da rua debaixo dos fogos. Ano novo, mesmo elenco.", cor: ["#f2c46d","#1a0a10"], foto: "223a2931", galeria: ["223a2931","e4e15e4e","3f1be3af"] },
+  ],
+
+  top10: [
+    "O sorriso dela (opinião técnica de dentista)",
+    "Ter respondido aquela mensagem no Instagram",
+    "Ter escolhido ficar quando quase acabou",
+    "Os cachos dela. Patrimônio nacional",
+    "A Dra. Amanda de jaleco",
+    "Topar todas as festas e rolês comigo",
+    "Princesa até no pé da comunidade",
+    "A bunda dela. Sem mais comentários 🍑",
+    "Como ela ri das próprias piadas",
+    "Tudo. Desculpa, não deu pra parar no 10",
+  ],
+
+  continuar: [
+    { t: "Viagem pra Praia", d: "A Temporada 2 começou com pé na areia. A próxima viagem já está no roteiro.", p: 70, cor: ["#6db3f2","#0f3b5e"], foto: "75221234-poster" },
+    { t: "Formatura da Dra.", d: "Um dia ela vai ter jaleco com o nome dela de doutora e ele vai chorar na plateia.", p: 45, cor: ["#f2c46d","#5e3a0f"], foto: "ed6710e9" },
+  ],
+
+  comedias: [
+    { t: "Princesa da Favela", d: "Namora no pé da comunidade, mas tem cara, pose e postura de princesa. O apelido se escreveu sozinho.", cor: ["#f2c46d","#7a3b1c"], foto: "31f5c2d9" },
+    { t: "A História do Secador", d: "Classificação: 18 anos. Os detalhes desse episódio ficam só entre nós dois. Ela sabe. 🤫", cor: ["#e56da8","#4a0f2e"], foto: "9a095d38" },
+    { t: "Eu Te Amo de Pânico", d: "O primeiro eu te amo da história foi dito por medo de ela morrer. Ela ficou ótima. Ele não retirou o que disse.", cor: ["#e5486b","#5a1530"] },
+  ],
+
+  bastidores: ["438a5aed","dad09abe","7b448b03","df9e915e","548edb92","65b77bb8","84ab32b0","04fe38a1","d17d60f9","33f55a00","89940681","72e40007","96956c76","2d8f9b5f","f05f734c","b4bc935e","3c4079c1","71c21ed7","dd648e73","4ee74a10","6d602b0a","bec24705","8034b6fd","c2b5eff8","a6198524","fac747f4"],
+};
+/* ========================================================== */
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const src = id => `fotos/${id}.jpg`;
+const grad = c => `linear-gradient(135deg, ${c[0]}, ${c[1]})`;
+const bg = (c, foto) => foto ? `url(${src(foto)}) center 30%/cover, ${grad(c)}` : grad(c);
+const palette = [["#e5486b","#4a0f22"],["#f2c46d","#5e3a0f"],["#6db3f2","#13305e"],["#c56df2","#2a1250"],["#46d3a0","#0f4a3a"]];
+
+const logoHTML = `${esc(DADOS.marca[0])}<span>${esc(DADOS.marca[1])}</span>`;
+$("#logo").innerHTML = logoHTML;
+$("#logoStart").innerHTML = logoHTML;
+$("#introLogo").innerHTML = logoHTML;
+$("#whoName").textContent = DADOS.perfil.n;
+$("#startName").textContent = DADOS.perfil.n;
+$("#startAv").style.backgroundImage = `url(${src(DADOS.perfil.foto)})`;
+$("#whoAv").style.backgroundImage = `url(${src(DADOS.perfil.foto)})`;
+
+// parede de fotos da tela de início
+(() => {
+  const ids = DADOS.montagem.map(m => m[0]);
+  const cols = 6;
+  for (let c = 0; c < cols; c++) {
+    const col = document.createElement("div"); col.className = "col";
+    const mine = ids.filter((_, i) => i % cols === c);
+    [...mine, ...mine].forEach(id => { const im = new Image(); im.src = src(id); im.alt = ""; im.loading = "eager"; col.append(im); });
+    $("#wall").append(col);
+  }
+})();
+
+// abertura
+let introDone = false, introTimer = null;
+function showApp(){
+  if (introDone) return; introDone = true;
+  clearTimeout(introTimer);
+  $("#intro").hidden = true; $("#start").hidden = true; $("#app").hidden = false;
+  startHearts(); scrollTo(0,0);
+}
+async function runIntro(){
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return showApp();
+  $("#start").hidden = true; $("#intro").hidden = false;
+  const list = DADOS.montagem;
+  const imgs = list.map(([id]) => { const im = new Image(); im.src = src(id); return im; });
+  await Promise.race([Promise.all(imgs.map(im => im.decode().catch(()=>{}))), new Promise(r => setTimeout(r, 2500))]);
+  const img = $("#mImg"), bgEl = $("#mBg"), flash = $("#flash"), year = $("#mYear");
+  const n = list.length;
+  const restart = (el) => { el.classList.remove("go"); void el.offsetWidth; el.classList.add("go"); };
+  let i = 0;
+  const step = () => {
+    if (introDone) return;
+    if (i >= n) {           // final: segura a última foto e solta o logo
+      year.textContent = "";
+      img.style.setProperty("--d", "2400ms"); restart(img);
+      restart($("#introLogo"));
+      introTimer = setTimeout(showApp, 2300);
+      return;
+    }
+    const [id, ano] = list[i];
+    const d = Math.round(340 - 250 * Math.pow(i / (n - 1), 0.6));   // acelera: 340ms → 90ms
+    img.src = src(id); bgEl.style.backgroundImage = `url(${src(id)})`;
+    img.style.setProperty("--d", d + "ms"); restart(img);
+    if (year.textContent !== String(ano)) { year.textContent = ano; restart(flash); }
+    i++;
+    introTimer = setTimeout(step, d);
+  };
+  step();
+}
+$("#startBtn").onclick = runIntro;
+$("#skip").onclick = showApp;
+
+const inicio = new Date(DADOS.inicioNamoro + "T00:00:00");
+const dias = Math.max(0, Math.floor((Date.now() - inicio) / 864e5));
+const temporadas = Math.floor(dias / 365.25) + 1;
+$("#heroTitle").textContent = DADOS.heroTitulo;
+$("#heroText").textContent = DADOS.heroTexto;
+$("#year").textContent = inicio.getFullYear();
+$("#seasons").textContent = `${temporadas} temporadas · ${dias.toLocaleString("pt-BR")} dias no ar`;
+$("#startMeta").textContent = `Um perfil só. Desde 2022 a gente divide tudo.`;
+
+function row(titulo, sub, cards){
+  const r = document.createElement("section");
+  r.className = "row";
+  r.innerHTML = `<h3>${esc(titulo)}${sub ? `<small>${esc(sub)}</small>` : ""}</h3><div class="track"></div>`;
+  cards.forEach(c => r.querySelector(".track").append(c));
+  $("#rows").append(r);
+}
+function card(e){
+  const {t, d, cor, label, glyph, novo, p, foto, video} = e;
+  const b = document.createElement("button");
+  b.className = "card" + (novo ? " new" : "");
+  const art = video
+    ? `<div class="art"><video src="fotos/${video}.mp4" poster="fotos/${video}-poster.jpg" muted autoplay loop playsinline preload="metadata"></video></div><span class="playmark">▶ VÍDEO</span>`
+    : `<div class="art" style="background:${bg(cor, foto)}"></div>`;
+  b.innerHTML = `${art}${glyph ? `<span class="glyph">${esc(glyph)}</span>` : ""}
+    ${label ? `<span class="ep">${esc(label)}</span>` : ""}<span class="t">${esc(t)}</span>
+    ${p != null ? `<div class="bar"><i style="width:${p}%"></i></div>` : ""}`;
+  b.onclick = () => open({ title: t, cor, foto, video: e.videos || (video ? [video] : null), galeria: e.galeria,
+    html: `<p class="tag">${esc(label || "")}</p>${video ? `<h5>${esc(t)}</h5>` : ""}<p>${esc(d)}</p>` });
+  return b;
+}
+
+DADOS.temporadas.forEach(s => row(s.nome, `${s.eps.length} episódios · ${s.sub}`,
+  s.eps.map((e,i) => card({...e, label:`Ep. ${i+1} · ${e.data}`, glyph:String(i+1).padStart(2,"0")}))));
+
+row("Especiais de Fim de Ano", "Natal e Ano Novo juntos", DADOS.especiais.map(e => card({...e, label:e.data})));
+
+row("Top 10 motivos de hoje", "em alta no meu coração", DADOS.top10.map((m,i) => {
+  const b = document.createElement("button");
+  b.className = "card top";
+  const c = palette[i % palette.length];
+  b.innerHTML = `<span class="num">${i+1}</span><div class="poster" style="background:${grad(c)}"><span>${esc(m)}</span></div>`;
+  b.onclick = () => open({ title:`Motivo nº ${i+1}`, cor:c, html:`<p style="font-size:22px">${esc(m)}</p>` });
+  return b;
+}));
+
+row(`Continuar assistindo como ${DADOS.ela}`, "planos em andamento",
+  DADOS.continuar.map(e => card({...e, label:`${e.p}% concluído`})));
+
+row("Comédias românticas", "piadas internas", DADOS.comedias.map(e => card({...e, label:"Só nós entendemos"})));
+
+row("Bastidores", `${DADOS.bastidores.length} fotos`, DADOS.bastidores.map((id,i) => {
+  const b = document.createElement("button");
+  b.className = "card poster2";
+  b.setAttribute("aria-label", `Foto ${i+1} dos bastidores`);
+  b.innerHTML = `<div class="art" style="background:url(${src(id)}) center 30%/cover"></div>`;
+  b.onclick = () => open({ title:"Bastidores", cor:palette[0], foto:id, galeria:DADOS.bastidores, html:`<p class="tag">Cenas que não entraram na edição final</p>` });
+  return b;
+}));
+
+function tick(){
+  const alvo = new Date(DADOS.proximaData + "T00:00:00");
+  const s = Math.max(0, Math.floor((alvo - Date.now())/1000));
+  if (s === 0) {
+    $("#s2Title").textContent = "Temporada 5 no ar";
+    $("#s2Text").textContent = `Estreou em 22/10/2026. Quatro anos de ${DADOS.ela} e ${DADOS.ele}, e a melhor parte ainda nem foi ao ar.`;
+  } else {
+    $("#s2Title").textContent = "Temporada 5 confirmada";
+    $("#s2Text").textContent = `Mesmo elenco desde 2022. Mais viagens, mais risadas, ${DADOS.ela} cada vez mais perto de virar doutora. Estreia em 22 de outubro.`;
+  }
+  const parts = [[Math.floor(s/86400),"dias"],[Math.floor(s%86400/3600),"horas"],[Math.floor(s%3600/60),"min"],[s%60,"seg"]];
+  $("#count").innerHTML = parts.map(([v,l]) => `<div><b>${String(v).padStart(2,"0")}</b><small>${l}</small></div>`).join("");
+}
+tick(); setInterval(tick, 1000);
+$("#foot").textContent = `Produção: ${DADOS.ele}. Roteiro: nós dois. Nenhum dente foi ferido nas gravações.`;
+
+function setCover(cor, foto){
+  const c = $("#mCover");
+  c.classList.remove("isvideo");
+  c.querySelector("video")?.remove();
+  c.style.background = foto ? `url(${src(foto)}) center 30%/cover, ${grad(cor)}` : grad(cor);
+}
+function open({title, cor, foto, video, galeria, html}){
+  $("#mTitle").textContent = title;
+  setCover(cor, foto);
+  const body = $("#mBody");
+  body.innerHTML = html;
+  if (video) {
+    let i = 0;
+    const show = () => {
+      const c = $("#mCover"); c.querySelector("video")?.remove(); c.classList.add("isvideo");
+      const v = document.createElement("video");
+      Object.assign(v, { src:`fotos/${video[i]}.mp4`, poster:`fotos/${video[i]}-poster.jpg`, controls:true, playsInline:true, loop:true });
+      c.prepend(v); v.play().catch(()=>{});
+    };
+    show();
+    if (video.length > 1) {
+      const g = document.createElement("div"); g.className = "gal";
+      video.forEach((id, k) => { const t = document.createElement("button");
+        t.style.backgroundImage = `url(fotos/${id}-poster.jpg)`; t.setAttribute("aria-label", `Vídeo ${k+1}`);
+        t.setAttribute("aria-pressed", k === 0);
+        t.onclick = () => { i = k; g.querySelectorAll("button").forEach((x,j)=>x.setAttribute("aria-pressed", j===k)); show(); };
+        g.append(t); });
+      body.append(g);
+    }
+  } else if (galeria && galeria.length > 1) {
+    const g = document.createElement("div"); g.className = "gal";
+    galeria.forEach((id, k) => { const t = document.createElement("button");
+      t.style.backgroundImage = `url(${src(id)})`; t.setAttribute("aria-label", `Foto ${k+1}`);
+      t.setAttribute("aria-pressed", id === foto);
+      t.onclick = () => { setCover(cor, id); g.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed", x===t)); };
+      g.append(t); });
+    body.append(g);
+  }
+  $("#modal").hidden = false;
+  $("#mClose").focus();
+}
+const closeM = () => { $("#modal").hidden = true; $("#mCover").querySelector("video")?.pause(); };
+$("#mClose").onclick = closeM;
+$("#modal").onclick = e => { if (e.target.id === "modal") closeM(); };
+addEventListener("keydown", e => { if (e.key === "Escape") closeM(); });
+
+$("#playBtn").onclick = () => open({ title:"Uma carta pra você", cor:["#e5486b","#2a0c18"], foto:"3c4079c1",
+  html:`<div class="letter">${DADOS.carta.map(l => `<p>${esc(l)}</p>`).join("")}<p class="sign">— ${esc(DADOS.ele)}</p></div>` });
+$("#infoBtn").onclick = () => open({ title:DADOS.heroTitulo, cor:["#f2c46d","#5a1530"], foto:"e7eb658e",
+  html:`<p><b>Elenco:</b> ${esc(DADOS.ela)}, ${esc(DADOS.ele)}</p><p><b>Gêneros:</b> Romance, Comédia, Odontologia</p><p><b>Primeiro beijo:</b> 01/08/2022 · <b>Oficial:</b> 22/10/2022</p><p><b>No ar há:</b> ${dias.toLocaleString("pt-BR")} dias</p><p>${esc(DADOS.heroTexto)}</p>` });
+
+function startHearts(){
+  const cv = $("#hearts"); if (!cv || matchMedia("(prefers-reduced-motion: reduce)").matches || cv.dataset.on) return;
+  cv.dataset.on = 1;
+  const ctx = cv.getContext("2d"); let W, H; const hs = [];
+  const size = () => { W = cv.width = cv.offsetWidth * devicePixelRatio; H = cv.height = cv.offsetHeight * devicePixelRatio; };
+  size(); addEventListener("resize", size);
+  for (let i = 0; i < 22; i++) hs.push({x:Math.random(), y:Math.random(), s:6+Math.random()*14, v:.0006+Math.random()*.0012, a:.15+Math.random()*.35});
+  const heart = (x,y,s) => { ctx.beginPath(); ctx.moveTo(x, y+s*.3);
+    ctx.bezierCurveTo(x, y, x-s*.5, y, x-s*.5, y+s*.3); ctx.bezierCurveTo(x-s*.5, y+s*.6, x, y+s*.8, x, y+s);
+    ctx.bezierCurveTo(x, y+s*.8, x+s*.5, y+s*.6, x+s*.5, y+s*.3); ctx.bezierCurveTo(x+s*.5, y, x, y, x, y+s*.3); ctx.fill(); };
+  (function loop(){
+    ctx.clearRect(0,0,W,H);
+    hs.forEach(h => { h.y -= h.v; if (h.y < -.1) { h.y = 1.1; h.x = Math.random(); }
+      ctx.fillStyle = `rgba(229,72,107,${h.a})`; heart(h.x*W, h.y*H, h.s*devicePixelRatio); });
+    requestAnimationFrame(loop);
+  })();
+}
+</script>
+
+</html>
